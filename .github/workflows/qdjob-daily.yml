@@ -151,7 +151,7 @@ jobs:
           token: ${{ secrets.DATA_REPO_TOKEN }}
           path: qdjob-data
 
-      - name: Debug: list data repo root and copy cookie.json (safe)
+      - name: Debug list data repo root and copy cookie.json (safe)
         if: steps.release.outputs.valid == 'true'
         run: |
           echo "Listing qdjob-data root:"
