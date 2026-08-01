@@ -143,37 +143,14 @@ jobs:
           mkdir -p /tmp/qdjob-run
           cp -r /tmp/qdjob/* /tmp/qdjob-run/
 
-      - name: Checkout data repository (safer)
+      - name: Clone data repository into temp directory
         if: steps.release.outputs.valid == 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.DATA_REPO }}
-          token: ${{ secrets.DATA_REPO_TOKEN }}
-          path: qdjob-data
-
-      - name: Debug list data repo root and copy cookie.json (safe)
-        if: steps.release.outputs.valid == 'true'
+        env:
+          DATA_REPO_TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
         run: |
-          echo "Listing qdjob-data root:"
-          ls -la qdjob-data || true
-        
-            # Set this to the relative path of cookie.json inside HKOWL/QDdata-private
-            COOKIE_IN_REPO="cookie.json"  # ← update this if cookie.json is in a subfolder, e.g. "secrets/cookie.json"
-        
-            echo "Checking for cookie at: qdjob-data/$COOKIE_IN_REPO"
-            if [ -f "qdjob-data/$COOKIE_IN_REPO" ]; then
-              echo "Found cookie.json — copying to /tmp/qdjob-run/cookie.json"
-              mkdir -p /tmp/qdjob-run
-              cp "qdjob-data/$COOKIE_IN_REPO" /tmp/qdjob-run/cookie.json
-              echo "cookie.json size: $(stat -c%s /tmp/qdjob-run/cookie.json) bytes"
-              stat -c "%n %s %y" /tmp/qdjob-run/cookie.json || true
-            else
-              echo "cookie.json NOT found at qdjob-data/$COOKIE_IN_REPO"
-              echo "Showing tree under qdjob-data (first 200 lines) for debugging:"
-              find qdjob-data -maxdepth 6 -type f | head -n 200 || true
-              # Fail so the run highlights the missing file (remove exit if you prefer non-failing debug)
-              exit 1
-            fi
+          rm -rf /tmp/qdjob-data
+          git clone "https://${DATA_REPO_TOKEN}@github.com/${{ env.DATA_REPO }}.git" /tmp/qdjob-data
+          cp -r /tmp/qdjob-data/* /tmp/qdjob-run/ 2>/dev/null || true
 
       - name: Run QDjob
         if: steps.release.outputs.valid == 'true'
