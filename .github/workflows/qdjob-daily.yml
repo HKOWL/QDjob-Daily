@@ -4,7 +4,7 @@ name: QDjob Daily
 # 配置 - 直接修改此处即可
 # ============================================================
 env:
-  QDJOB_REPO:        qdjob/QDjob  # 发布主仓库不用改
+  QDJOB_REPO:        qdjob/QDjob  # 发布主仓库不用改a
   QDJOB_ASSET:       QDjob_linux_amd64.zip  # 引用资源的名称不用更改
   DATA_REPO:         HKOWL/QDdata-private  # 修改为你自己的数据仓库，确保仓库存在且有写入权限
   GIT_USER:          github-actions[bot]  # 修改为你自己的 GitHub 用户名或保留默认
